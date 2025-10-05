@@ -1,0 +1,74 @@
+name: Laravel CI/CD Pipeline
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    runs-on: self-hosted
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v3
+
+      - name: Deploy to Server
+        uses: appleboy/ssh-action@v1.2.0
+        with:
+          host: ${{ vars.SSH_HOST }}
+          username: ${{ vars.SSH_USERNAME }}
+          password: ${{ secrets.SSH_PASSWORD }}
+          port: ${{ vars.SSH_PORT }}
+          script: |
+            echo "Deployment directory: ${{ vars.PATH }}"
+            echo "Repository URL: https://github.com/jnloos/Specificat.git"
+
+            mkdir -p ${{ vars.PATH }}
+            cd ${{ vars.PATH }}
+
+            if [ ! -d .git ]; then
+              echo "Initializing repository..."
+              git config --global --add safe.directory ${{ vars.PATH }}
+              git init
+              git remote add origin https://${{ vars.GIT_USERNAME }}:${{ secrets.GIT_PASSWORD }}@github.com/jnloos/Specificat.git
+            else
+              echo "Repository already initialized. Ensuring correct remote..."
+              git remote set-url origin https://${{ vars.GIT_USERNAME }}:${{ secrets.GIT_PASSWORD }}@github.com/jnloos/Specificat.git
+            fi
+
+            echo "Fetching latest changes..."
+            git fetch --all
+
+            echo "Checking out the production branch..."
+            git checkout -B main origin/main
+
+            echo "Resetting to match remote branch..."
+            git reset --hard origin/main
+
+            echo "Pulling latest changes..."
+            git pull --rebase origin/main
+
+            echo "Installing dependencies..."
+            composer install --no-dev --optimize-autoloader --no-interaction --prefer-dist || exit 1
+
+            echo "Building assets..."
+            rm -rf node_modules package-lock.json
+            npm cache clean --force
+            npm install --force
+            npm rebuild vite
+            npm run build
+
+            echo "Running migrations and clearing cache..."
+            php artisan migrate --force
+            php artisan storage:link
+            php artisan sitemap:create
+            php artisan optimize:clear
+            php artisan optimize
+
+            echo "Setup python environment"
+            php artisan python3:remove-venv
+            php artisan python3:create-venv
