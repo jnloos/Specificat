@@ -34,3 +34,6 @@ auth.json
 
 # IDE
 .idea
+
+# Python Venv
+.venv
