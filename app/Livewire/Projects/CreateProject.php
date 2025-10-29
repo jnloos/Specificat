@@ -17,6 +17,9 @@ class CreateProject extends Component
     #[Validate('required|in:5,10,20')]
     public int $frequency= 10;
 
+    #[Validate('required|in:multiple,single')]
+    public string $strategy = 'multiple';
+
     public function save(): void {
         $this->validate();
 
@@ -24,6 +27,7 @@ class CreateProject extends Component
         $project->title = $this->title;
         $project->description = $this->description;
         $project->summary_frequency = $this->frequency;
+        $project->prompting_strategy = $this->strategy;
         $project->save();
 
         $this->redirect(route('project.show', $project), navigate: true);

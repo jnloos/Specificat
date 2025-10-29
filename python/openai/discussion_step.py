@@ -26,7 +26,8 @@ def generate_discussion_step(payload: dict) -> str:
           { "expert_id": 2, "content": "Another message text" },
           { "expert_id": null, "content": "A users message text" }
         ]
-      }
+      },
+      "prompt_strategy": "single"
     }
     """
 

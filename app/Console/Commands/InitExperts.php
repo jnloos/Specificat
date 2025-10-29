@@ -42,9 +42,6 @@ class InitExperts extends Command
             return 1;
         }
 
-        // Optionally clear existing data
-        Expert::truncate();
-
         foreach ($experts as $expert) {
             $model = new Expert();
 

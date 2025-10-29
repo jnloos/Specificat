@@ -23,7 +23,7 @@ class GeminiClient implements LLMClient
         ];
 
         $jsonInput = json_encode($payload, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
-        $jsonOutput = $this->pythonVenv->exec('gemini-clients/summary_gen.py', [$jsonInput]);
+        $jsonOutput = $this->pythonVenv->exec('python/gemini/summary_gen.py', [$jsonInput]);
 
         /**
          * Input JSON → summary_gen.py
@@ -60,7 +60,7 @@ class GeminiClient implements LLMClient
         ];
 
         $jsonInput = json_encode($payload, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
-        $jsonOutput = $this->pythonVenv->exec('gemini-clients/discussion_step.py', [$jsonInput]);
+        $jsonOutput = $this->pythonVenv->exec('python/gemini/discussion_step.py', [$jsonInput]);
 
         /**
          * Input JSON → discussion_step.py

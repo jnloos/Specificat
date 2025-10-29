@@ -9,10 +9,16 @@
         <form wire:submit.prevent="save" class="space-y-6">
             <flux:input wire:model.defer="title" :label="__('Title')"/>
             <flux:textarea wire:model.defer="description" :label="__('Description')" rows="10"/>
+
             <flux:select wire:model.defer="frequency" :label="__('Memory Reduction')">
                 <option value="5">{{ __('High') }}</option>
                 <option value="10">{{ __('Standard') }}</option>
                 <option value="20">{{ __('Low') }}</option>
+            </flux:select>
+
+            <flux:select wire:model.defer="strategy" :label="__('Prompting Strategy')">
+                <option value="single">{{ __('Single-Threaded') }}</option>
+                <option value="multiple">{{ __('Multi-Threaded') }}</option>
             </flux:select>
 
 
