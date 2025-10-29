@@ -68,5 +68,5 @@ jobs:
             php artisan optimize
 
             echo "Setup python environment"
-            php artisan python:remove-venv
+            php artisan python:delete-venv
             php artisan python:create-venv

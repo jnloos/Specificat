@@ -5,7 +5,6 @@ namespace App\Livewire\Projects;
 use App\Models\Project;
 use Flux\Flux;
 use Illuminate\Support\Facades\Cookie;
-use Illuminate\Support\Facades\Redirect;
 use Livewire\Attributes\Locked;
 use Livewire\Attributes\On;
 use Livewire\Attributes\Validate;
@@ -25,11 +24,15 @@ class EditProject extends Component
     #[Validate('required|in:5,10,20')]
     public int $frequency = 10;
 
+    #[Validate('required|in:multiple,single')]
+    public string $strategy = 'multiple';
+
     public function mount(Project $project): void {
         $this->forProjectId = $project->id;
         $this->title = $project->title;
         $this->description = $project->description;
         $this->frequency = $project->summary_frequency;
+        $this->strategy = $project->prompting_strategy;
     }
 
     #[On('edit_project')]
