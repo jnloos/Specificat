@@ -6,7 +6,7 @@ import json
 from pathlib import Path
 from string import Template
 
-load_dotenv(dotenv_path='../.env')
+load_dotenv(dotenv_path="../.env")
 
 
 def build_prompt(payload: dict) -> str:
@@ -34,19 +34,18 @@ def build_prompt(payload: dict) -> str:
         msg_lines.append(f"- {speaker}: {m.get('content', '')}")
     messages_section = "\n".join(msg_lines) if msg_lines else "- none"
 
-
-    # Load prompt template from sibling file and substitute placeholders
-    template_path = Path(__file__).with_name('get_summary_prompt.tmpl')
+    # Template substitution
+    template_path = Path(__file__).with_name("get_summary_prompt.tmpl")
     if not template_path.exists():
         raise FileNotFoundError(f"Prompt template not found: {template_path}")
 
-    template_text = template_path.read_text(encoding='utf-8')
+    template_text = template_path.read_text(encoding="utf-8")
     tmpl = Template(template_text)
 
     prompt = tmpl.safe_substitute(
         expert_section=expert_section,
-        title=title or "",
-        description=description or "",
+        title=title,
+        description=description,
         messages_section=messages_section,
     )
 
@@ -55,10 +54,10 @@ def build_prompt(payload: dict) -> str:
 
 def generate_summary(payload: dict) -> str:
     api_key = os.getenv("OPENAI_API_KEY")
-    model_name = os.getenv("OPENAI_MODEL", "gpt-5-chat-latest")
     if not api_key:
         raise ValueError("OPENAI_API_KEY is not set")
 
+    model_name = os.getenv("OPENAI_MODEL", "gpt-5-chat-latest")
     client = OpenAI(api_key=api_key)
     prompt = build_prompt(payload)
 
@@ -73,7 +72,7 @@ def generate_summary(payload: dict) -> str:
 
 def main():
     if len(sys.argv) < 2:
-        print("Usage: python summary_gen.py '<input_json>'", file=sys.stderr)
+        print("Usage: python get_summary.py '<input_json>'", file=sys.stderr)
         sys.exit(1)
 
     try:
@@ -90,7 +89,7 @@ def main():
         except json.JSONDecodeError:
             print(result_text)
     except Exception as e:
-        print(f"Error: {str(e)}", file=sys.stderr)
+        print(json.dumps({"error": str(e)}), file=sys.stderr)
         sys.exit(1)
 
 
