@@ -56,7 +56,8 @@ class OpenAIClient implements LLMClient
     public function getNextMessage(array $project, array $experts): array {
         $payload = [
             'experts' => $experts,
-            'project' => $project
+            'project' => $project,
+            'mode' => $project['prompting_strategy'],
         ];
 
         $jsonInput = json_encode($payload, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);

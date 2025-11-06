@@ -2,7 +2,6 @@
 namespace App\Services;
 
 use App\Models\Expert;
-use App\Services\Dependencies\LLMClient;
 use App\Services\Dependencies\SpecificationService;
 
 class UnifiedPrompting extends SpecificationService
@@ -70,7 +69,8 @@ class UnifiedPrompting extends SpecificationService
 
             if ($expert->id === $importantExpert && isset($importantContent['statement'])) {
                 $thought->content .= "\n\n" . $expert->name . " was able to contribute: " . $importantContent['statement'];
-            } elseif (isset($response[$expert->id]['statement'])) {
+            }
+            elseif (isset($response[$expert->id]['statement'])) {
                 $thought->content .= "\n\n" . $expert->name . " wanted to contribute: " . $response[$expert->id]['statement'];
             }
 
