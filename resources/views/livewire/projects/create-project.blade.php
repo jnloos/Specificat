@@ -1,6 +1,6 @@
 <div>
     <flux:heading size="xl">{{ __('Create Project') }}</flux:heading>
-    <div class="max-w-xl mx-auto pt-20">
+    <div class="max-w-xl mx-auto mt-10">
         <form wire:submit.prevent="save" class="space-y-6">
 
             <flux:input wire:model.defer="title" :label="__('Title')" description="Enter a concise and recognizable project title."/>
