@@ -137,6 +137,7 @@ class Project extends Model
             'title' => $this->title,
             'description' => $this->description,
             'messages' => $messages,
+            'prompting_strategy' => $this->prompting_strategy
         ];
     }
 }

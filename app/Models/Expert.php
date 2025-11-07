@@ -7,7 +7,6 @@ use Illuminate\Database\Eloquent\Attributes\ObservedBy;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
-use Illuminate\Support\Collection;
 
 #[ObservedBy([ExpertObserver::class])]
 class Expert extends Model
@@ -25,7 +24,10 @@ class Expert extends Model
             $project = $project->id;
         }
 
-        return $this->summaries()->where('project_id', '=', $project)->first();
+        return Summary::firstOrCreate(
+            ['project_id' => $project, 'expert_id' => $this->id],
+            ['content' => '']
+        );
     }
 
     public function isContributing(Project $project): bool {
