@@ -28,6 +28,10 @@ Route::middleware(['auth', 'verified'])
 
         // Project access path
         Route::get('{project}', function (Project $project) {
+            if (! Gate::allows('access-project', $project)) {
+                return redirect()->route('project.new');
+            }
+
             Cookie::queue('curr_project', str($project->id), minutes: 60 * 24 * 31);
             return view('project', compact('project'));
         })->name('show');
