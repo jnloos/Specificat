@@ -71,7 +71,7 @@ def generate_discussion_step(payload: dict) -> str:
         if not api_key:
             raise ValueError("OPENAI_API_KEY not set")
 
-        model_name = os.getenv("OPENAI_MODEL", "gpt-5")
+        model_name = os.getenv("OPENAI_MODEL", "gpt-4o")
         client = OpenAI(api_key=api_key)
 
         prompt = build_joint_prompt(payload)
