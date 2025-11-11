@@ -10,7 +10,7 @@ use App\Services\MarkdownParser;
 use App\Services\OpenAIClient;
 use App\Services\AssistantSummary;
 use App\Services\PythonVenv;
-use App\Services\UnifiedPrompting;
+use App\Services\SpecPrompting;
 use Illuminate\Support\ServiceProvider;
 use Parsedown;
 
@@ -31,7 +31,6 @@ class AppServiceProvider extends ServiceProvider
         });
 
         $this->app->singleton(LLMClient::class, function () {
-            // TODO: AI providers can be changed here
             // IMPLEMENTS INTERFACE LLMClient
             // return new GeminiClient();
             return new OpenAIClient();
@@ -39,10 +38,9 @@ class AppServiceProvider extends ServiceProvider
 
         // Register Specification service
         $this->app->singleton(SpecificationService::class, function ($app) {
-            // TODO: Prompting strategies can be changed here
             // EXTENDS ABSTRACT SpecificationService
             $client = $app->make(LLMClient::class);
-            return new UnifiedPrompting($client);
+            return new SpecPrompting($client);
         });
 
         // Register Summary service

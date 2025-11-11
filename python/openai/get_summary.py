@@ -57,7 +57,7 @@ def generate_summary(payload: dict) -> str:
     if not api_key:
         raise ValueError("OPENAI_API_KEY is not set")
 
-    model_name = os.getenv("OPENAI_MODEL", "gpt-5-chat-latest")
+    model_name = os.getenv("OPENAI_MODEL", "gpt-5")
     client = OpenAI(api_key=api_key)
     prompt = build_prompt(payload)
 

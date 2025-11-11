@@ -52,13 +52,12 @@ def generate_next_message(expert: dict, project: dict, messages: list) -> dict:
 
     # Query OpenAI
     response = client.chat.completions.create(
-        model=os.getenv("OPENAI_MODEL", "gpt-5-chat-latest"),
+        model=os.getenv("OPENAI_MODEL", "gpt-5"),
         messages=[
             {"role": "system", "content": "You are an expert participating in a requirements analysis discussion. Output valid JSON only."},
             {"role": "user", "content": prompt}
         ],
         response_format={"type": "json_object"},
-        temperature=0.7
     )
 
     # Safely parse model output
@@ -75,7 +74,7 @@ def generate_next_message(expert: dict, project: dict, messages: list) -> dict:
 
     return {
         "expert_id": expert_id,
-        "statement": entry.get("statement", ""),
+        "statement": entry.get("statement", "SOMETHING IS WRONG"),
         "importance": entry.get("importance", 5)
     }
 

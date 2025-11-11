@@ -3,11 +3,13 @@ namespace App\Services;
 
 use App\Models\Expert;
 use App\Services\Dependencies\SpecificationService;
+use Log;
 
-class UnifiedPrompting extends SpecificationService
+class SpecPrompting extends SpecificationService
 {
     public function generateNextMessage(): void {
         $response = $this->sendPrompt();
+        Log::debug(json_encode($response, JSON_PRETTY_PRINT));
         $this->processResponse($response);
     }
 

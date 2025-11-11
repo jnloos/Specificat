@@ -71,7 +71,7 @@ def generate_discussion_step(payload: dict) -> str:
         if not api_key:
             raise ValueError("OPENAI_API_KEY not set")
 
-        model_name = os.getenv("OPENAI_MODEL", "gpt-5-chat-latest")
+        model_name = os.getenv("OPENAI_MODEL", "gpt-5")
         client = OpenAI(api_key=api_key)
 
         prompt = build_joint_prompt(payload)
@@ -83,7 +83,7 @@ def generate_discussion_step(payload: dict) -> str:
         return response.choices[0].message.content.strip()
 
     # --- MULTI MODE: one request per expert (parallelizable) ---
-    elif mode == "multi":
+    elif mode == "multiple":
         results = {}
 
         def run_expert(expert):
@@ -96,7 +96,7 @@ def generate_discussion_step(payload: dict) -> str:
                 }
             except Exception as e:
                 print(f"Error processing expert {expert_id}: {str(e)}", file=sys.stderr)
-                return expert_id, {"statement": "", "importance": 0}
+                return expert_id, {"statement": str(e), "importance": 0}
 
         # Run all experts concurrently for better performance
         with concurrent.futures.ThreadPoolExecutor() as executor:
@@ -106,7 +106,7 @@ def generate_discussion_step(payload: dict) -> str:
         return json.dumps(results, ensure_ascii=False)
 
     else:
-        raise ValueError(f"Unknown mode '{mode}' – use 'single' or 'multi'.")
+        raise ValueError(f"Unknown mode '{mode}' – use 'single' or 'multiple'.")
 
 # ---------- Entrypoint ----------
 def main():
