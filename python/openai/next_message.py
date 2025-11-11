@@ -3,7 +3,9 @@ import sys
 import json
 from openai import OpenAI
 from string import Template
+from dotenv import load_dotenv
 
+load_dotenv(dotenv_path="../.env")
 
 def generate_next_message(expert: dict, project: dict, messages: list) -> dict:
     """
@@ -52,7 +54,7 @@ def generate_next_message(expert: dict, project: dict, messages: list) -> dict:
 
     # Query OpenAI
     response = client.chat.completions.create(
-        model=os.getenv("OPENAI_MODEL", "gpt-5"),
+        model=os.getenv("OPENAI_MODEL", "gpt-4o"),
         messages=[
             {"role": "system", "content": "You are an expert participating in a requirements analysis discussion. Output valid JSON only."},
             {"role": "user", "content": prompt}
