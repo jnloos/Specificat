@@ -21,6 +21,7 @@ class SpecPrompting extends SpecificationService
             $expertData[] = $expert->asPromptArray($this->project);
         }
 
+        Log::debug(json_encode($projectData, JSON_PRETTY_PRINT));
         return $this->aiClient->getNextMessage($projectData, $expertData);
     }
 

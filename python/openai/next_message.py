@@ -74,6 +74,7 @@ def generate_next_message(expert: dict, project: dict, messages: list) -> dict:
     else:
         entry = result
 
+    print()
     return {
         "expert_id": expert_id,
         "statement": entry.get("statement", "SOMETHING IS WRONG"),

@@ -47,6 +47,7 @@ class EditProject extends Component
         $project->title = $this->title;
         $project->description = $this->description;
         $project->summary_frequency = $this->frequency;
+        $project->prompting_strategy = $this->strategy;
         $project->save();
 
         $this->dispatch('project_edited');
