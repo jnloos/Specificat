@@ -23,7 +23,7 @@ class OpenAIClient implements LLMClient
         ];
 
         $jsonInput = json_encode($payload, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
-        $jsonOutput = $this->pythonVenv->exec('../python/openai/summary_gen.py', [$jsonInput]);
+        $jsonOutput = $this->pythonVenv->exec('python/openai/summary_gen.py', [$jsonInput]);
 
         /**
          * Input JSON → summary_gen.py
@@ -63,7 +63,7 @@ class OpenAIClient implements LLMClient
         $jsonInput = json_encode($payload, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
         Log::debug($jsonInput);
 
-        $jsonOutput = $this->pythonVenv->exec('../python/openai/discussion_step.py', [$jsonInput]);
+        $jsonOutput = $this->pythonVenv->exec('python/openai/discussion_step.py', [$jsonInput]);
 
         /**
          * Input JSON → discussion_step.py
