@@ -49,7 +49,7 @@ class ControlChat extends Component
     public function tick(): void {
         if ($this->project->shouldGenerate()) {
             if(! ProjectJob::isRunningFor($this->projectId)) {
-                MessageGenerator::dispatch($this->projectId);
+                MessageGenerator::dispatchAfterResponse($this->projectId);
             }
         }
 
