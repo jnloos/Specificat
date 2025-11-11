@@ -62,6 +62,12 @@ class Project extends Model
             ->get()->pluck('user')->filter();
     }
 
+    public function hasContributor(User $user): bool {
+        return $this->contributors()
+            ->whereHas('user', fn($q) => $q->where('id', $user->id))
+            ->exists();
+    }
+
     protected static function booted(): void {
         static::created(function (Project $project): void {
             if (auth()->check()) {

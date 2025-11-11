@@ -23,7 +23,11 @@
                     <flux:navlist.item icon="user-circle" :href="route('experts')" :current="request()->routeIs('experts')" wire:navigate>{{ __('Edit Experts') }}</flux:navlist.item>
                 </flux:navlist.group>
 
-                @php($projects = Project::orderBy('updated_at')->get())
+                @php
+                    $projects = Project::whereHas('contributors', function ($q) {
+                        $q->where('user_id', auth()->id());
+                    })->orderBy('updated_at', 'desc')->get()
+                @endphp
                 @if ($projects->isNotEmpty())
                     <flux:navlist.group :heading="__('Projects')" class="grid mt-5">
                         @foreach ($projects as $project)
