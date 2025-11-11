@@ -11,7 +11,7 @@ return new class extends Migration
      */
     public function up(): void {
         Schema::table('projects', function (Blueprint $table) {
-            $table->integer('prompting_strategy')->after('summary_frequency')->default('single');
+            $table->string('prompting_strategy')->after('summary_frequency')->default('single');
         });
     }
 
