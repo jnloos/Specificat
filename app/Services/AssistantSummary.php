@@ -3,9 +3,8 @@ namespace App\Services;
 
 use App\Models\Contributor;
 use App\Services\Dependencies\HasProject;
-use App\Services\Dependencies\LLMService;
 
-class AssistantSummary extends LLMService
+class AssistantSummary
 {
     use HasProject;
 

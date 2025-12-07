@@ -3,7 +3,7 @@
 namespace App\Providers;
 
 use App\Facades\Markdown;
-use App\Services\Dependencies\LLMClient;
+use App\Services\Dependencies\PromptingStrategy;
 use App\Services\Dependencies\SpecificationService;
 use App\Services\GeminiClient;
 use App\Services\MarkdownParser;
@@ -30,7 +30,7 @@ class AppServiceProvider extends ServiceProvider
             return new MarkdownParser($parser);
         });
 
-        $this->app->singleton(LLMClient::class, function () {
+        $this->app->singleton(PromptingStrategy::class, function () {
             // IMPLEMENTS INTERFACE LLMClient
             // return new GeminiClient();
             return new OpenAIClient();
@@ -39,13 +39,13 @@ class AppServiceProvider extends ServiceProvider
         // Register Specification service
         $this->app->singleton(SpecificationService::class, function ($app) {
             // EXTENDS ABSTRACT SpecificationService
-            $client = $app->make(LLMClient::class);
+            $client = $app->make(PromptingStrategy::class);
             return new SpecPrompting($client);
         });
 
         // Register Summary service
         $this->app->singleton(AssistantSummary::class, function ($app) {
-            $client = $app->make(LLMClient::class);
+            $client = $app->make(PromptingStrategy::class);
             return new AssistantSummary($client);
         });
     }

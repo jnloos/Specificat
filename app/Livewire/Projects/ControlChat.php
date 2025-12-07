@@ -1,10 +1,11 @@
 <?php
 namespace App\Livewire\Projects;
 
-use App\Facades\Summary;
 use App\Jobs\Dependencies\ProjectJob;
 use App\Jobs\MessageGenerator;
+use App\Models\Contributor;
 use App\Models\Project;
+use App\Services\Dependencies\PromptingStrategy;
 use Livewire\Attributes\Locked;
 use Livewire\Attributes\On;
 use Livewire\Attributes\Validate;
@@ -41,7 +42,11 @@ class ControlChat extends Component
 
     public function generateSummary(): void {
         $this->project->setSummarizing();
-        Summary::forProject($this->project)->generateUserSummary();
+
+        /** @var class-string<PromptingStrategy> $strategy */
+        $strategy = $this->project->prompting_strategy::forProject($this->project);
+        $strategy->genAssistantSummary();
+
         $this->project->setPaused();
         $this->tick();
     }

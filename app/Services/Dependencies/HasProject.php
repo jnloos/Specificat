@@ -7,8 +7,11 @@ trait HasProject
 {
     protected Project $project;
 
-    public function forProject(Project $project): self {
+    public function __construct(Project $project) {
         $this->project = $project;
-        return $this;
+    }
+
+    public static function forProject(Project $project): static {
+        return new static($project);
     }
 }

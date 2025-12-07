@@ -4,6 +4,7 @@ namespace App\Jobs;
 use App\Facades\Specification;
 use App\Jobs\Dependencies\ProjectJob;
 use App\Models\Project;
+use App\Services\Dependencies\PromptingStrategy;
 use Exception;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
@@ -23,7 +24,9 @@ class MessageGenerator extends ProjectJob implements ShouldQueue
     public function handle(): void {
         $this->withProjectLock(function (Project $project) {
             try {
-                Specification::forProject($project)->generateNextMessage();
+                /** @var class-string<PromptingStrategy> $strategy */
+                $strategy = $project->prompting_strategy::forProject($project);
+                $strategy->genNextMessage();
             }
             catch (Exception $e) {
                 Log::error(sprintf("%s: %s", $e->getMessage(), $e->getTraceAsString()));

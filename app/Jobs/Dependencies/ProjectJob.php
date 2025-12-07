@@ -2,7 +2,7 @@
 namespace App\Jobs\Dependencies;
 
 use App\Models\Project;
-use App\Services\Dependencies\LLMService;
+use App\Services\Dependencies\PromptingStrategy;
 use Illuminate\Support\Facades\Cache;
 
 class ProjectJob
@@ -17,7 +17,7 @@ class ProjectJob
 
     public static function isRunningFor(int $projectId): bool {
         $project = Project::findOrFail($projectId);
-        $lock = Cache::lock(LLMService::lockName($project->id));
+        $lock = Cache::lock(PromptingStrategy::lockName($project->id));
         $token = $lock->get();
 
         if ($token === false) {
@@ -29,7 +29,7 @@ class ProjectJob
     }
 
     protected function withProjectLock(callable $callback): void {
-        $lock = Cache::lock(LLMService::lockName($this->project->id), seconds: self::$lockTTL);
+        $lock = Cache::lock(PromptingStrategy::lockName($this->project->id), seconds: self::$lockTTL);
         $token = $lock->get();
 
         if ($token === false) {
