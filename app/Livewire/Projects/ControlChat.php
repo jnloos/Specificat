@@ -3,7 +3,7 @@ namespace App\Livewire\Projects;
 
 use App\Jobs\Dependencies\ProjectJob;
 use App\Jobs\MessageGenerator;
-use App\Models\Contributor;
+use App\Jobs\SummaryGenerator;
 use App\Models\Project;
 use App\Services\Dependencies\PromptingStrategy;
 use Livewire\Attributes\Locked;
@@ -43,9 +43,9 @@ class ControlChat extends Component
     public function generateSummary(): void {
         $this->project->setSummarizing();
 
-        /** @var class-string<PromptingStrategy> $strategy */
-        $strategy = $this->project->prompting_strategy::forProject($this->project);
-        $strategy->genAssistantSummary();
+        if(! ProjectJob::isRunningFor($this->projectId)) {
+            SummaryGenerator::dispatch($this->projectId);
+        }
 
         $this->project->setPaused();
         $this->tick();
