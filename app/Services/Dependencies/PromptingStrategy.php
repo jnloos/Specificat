@@ -3,6 +3,7 @@ namespace App\Services\Dependencies;
 
 use App\Models\Contributor;
 use App\Models\Project;
+use Illuminate\Support\Facades\Concurrency;
 use OpenAI;
 use function Laravel\Prompts\confirm;
 
@@ -29,6 +30,25 @@ abstract class PromptingStrategy
             'model' => $this->model,
             'input' => $prompt
         ])->outputText;
+    }
+
+    public function sendPrompts(array $prompts): array {
+        $apiKey = config('apis.openai.api_key');
+        $model  = $this->model;
+
+        $tasks = [];
+        foreach ($prompts as $prompt) {
+            $tasks[] = static function () use ($apiKey, $model, $prompt) {
+                $client = OpenAI::client($apiKey);
+
+                return $client->responses()->create([
+                    'model' => $model,
+                    'input' => $prompt,
+                ])->outputText;
+            };
+        }
+
+        return Concurrency::run($tasks);
     }
 
     public static function lockName(int $projectId): string {

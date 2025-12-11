@@ -51,7 +51,6 @@ class SinglePrompting extends PromptingStrategy
         }
 
         // Sort by importance
-        Log::info($response);
         uasort($response, function ($a, $b) {
             return ($b['importance'] ?? 0) <=> ($a['importance'] ?? 0);
         });
@@ -64,6 +63,7 @@ class SinglePrompting extends PromptingStrategy
             $this->project->addMessage($importantContent['statement'], contributor: $expert);
         }
 
+        // Refresh summaries if needed
         if($this->needsExpertSummariesRefresh()) {
             $this->genExpertSummaries();
         }
