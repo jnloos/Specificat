@@ -14,7 +14,7 @@ abstract class PromptingStrategy
 
     public function __construct(Project $project) {
         $this->project = $project;
-        $apiKey = getenv(config('apis.openai.api_key'));
+        $apiKey = config('apis.openai.api_key');
         $this->model = config('apis.openai.model');
         $this->client = OpenAI::client($apiKey);
     }
@@ -39,11 +39,11 @@ abstract class PromptingStrategy
     public function genAssistantSummary(): void {
         // Prepare data
         $params = [];
-        $this['project'] = $this->project->asPromptArray();
+        $params['project'] = $this->project->asPromptArray();
         $prompt = view('prompts.assistant-summary', $params)->render();
 
         // Send Request
-        $response = json_decode($this->sendPrompt($prompt));
+        $response = json_decode($this->sendPrompt($prompt), associative: true);
         if (empty($response)) {
             return;
         }

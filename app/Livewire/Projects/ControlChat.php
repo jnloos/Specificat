@@ -44,12 +44,7 @@ class ControlChat extends Component
         $this->project->setSummarizing();
 
         if(! ProjectJob::isRunningFor($this->projectId)) {
-            if (config('app.debug')) {
-                SummaryGenerator::dispatchSync($this->projectId);
-            }
-            else {
-                SummaryGenerator::dispatch($this->projectId);
-            }
+            SummaryGenerator::dispatch($this->projectId);
         }
 
         $this->project->setPaused();
@@ -59,12 +54,7 @@ class ControlChat extends Component
     public function tick(): void {
         if ($this->project->shouldGenerate()) {
             if(! ProjectJob::isRunningFor($this->projectId)) {
-                if (config('app.debug')) {
-                    MessageGenerator::dispatchSync($this->projectId);
-                }
-                else {
-                    MessageGenerator::dispatch($this->projectId);
-                }
+                MessageGenerator::dispatch($this->projectId);
             }
         }
 

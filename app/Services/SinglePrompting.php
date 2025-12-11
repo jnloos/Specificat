@@ -2,20 +2,22 @@
 namespace App\Services;
 
 use App\Models\Expert;
-use App\Models\Project;
 use App\Services\Dependencies\PromptingStrategy;
+use Illuminate\Support\Facades\Log;
 
 class SinglePrompting extends PromptingStrategy
 {
     public function genExpertSummaries(): void {
         // Prepare Data
         $params = [];
-        $this['project'] = $this->project->asPromptArray();
-        $params['experts'] = $this->project->contributingExperts->asPromptArray();
+        $params['project'] = $this->project->asPromptArray();
+        foreach ($this->project->contributingExperts() as $expert) {
+            $params['experts'][] = $expert->asPromptArray($this->project);
+        }
         $prompt = view('prompts.single.expert-summaries', $params)->render();
 
         // Send Request
-        $response = json_decode($this->sendPrompt($prompt));
+        $response = json_decode($this->sendPrompt($prompt), associative: true);
         if (empty($response)) {
             return;
         }
@@ -36,17 +38,20 @@ class SinglePrompting extends PromptingStrategy
     public function genNextMessage(): void {
         // Prepare Data
         $params = [];
-        $this['project'] = $this->project->asPromptArray();
-        $params['experts'] = $this->project->contributingExperts->asPromptArray();
+        $params['project'] = $this->project->asPromptArray();
+        foreach ($this->project->contributingExperts() as $expert) {
+            $params['experts'][] = $expert->asPromptArray($this->project);
+        }
         $prompt = view('prompts.single.next-message', $params)->render();
 
         // Send Request
-        $response = json_decode($this->sendPrompt($prompt));
+        $response = json_decode($this->sendPrompt($prompt), associative: true);
         if (empty($response)) {
             return;
         }
 
         // Sort by importance
+        Log::info($response);
         uasort($response, function ($a, $b) {
             return ($b['importance'] ?? 0) <=> ($a['importance'] ?? 0);
         });
