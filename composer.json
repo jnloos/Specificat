@@ -11,11 +11,13 @@
     "require": {
         "php": "^8.2",
         "erusev/parsedown": "^1.7",
+        "guzzlehttp/guzzle": "^7.10",
         "laravel/framework": "^12.0",
         "laravel/tinker": "^2.10.1",
         "livewire/flux": "^2.1",
-        "livewire/flux-pro": "^2.1",
-        "livewire/volt": "^1.7.0"
+        "livewire/flux-pro": "^2.5",
+        "livewire/volt": "^1.7.0",
+        "openai-php/client": "^0.18.0"
     },
     "require-dev": {
         "fakerphp/faker": "^1.23",
@@ -75,10 +77,11 @@
     },
     "minimum-stability": "stable",
     "prefer-stable": true,
-    "repositories": {
-        "flux-pro": {
+    "repositories": [
+        {
+            "name": "flux-pro",
             "type": "composer",
             "url": "https://composer.fluxui.dev"
         }
-    }
+    ]
 }

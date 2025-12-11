@@ -142,8 +142,7 @@ class Project extends Model
         return [
             'title' => $this->title,
             'description' => $this->description,
-            'messages' => $messages,
-            'prompting_strategy' => $this->prompting_strategy
+            'messages' => $messages
         ];
     }
 }

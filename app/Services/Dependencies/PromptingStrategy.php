@@ -1,11 +1,35 @@
 <?php
 namespace App\Services\Dependencies;
 
+use App\Models\Contributor;
 use App\Models\Project;
+use OpenAI;
+use function Laravel\Prompts\confirm;
 
 abstract class PromptingStrategy
 {
-    use HasProject;
+    protected Project $project;
+    protected OpenAI\Client $client;
+    protected string $model;
+
+    public function __construct(Project $project) {
+        $this->project = $project;
+        $apiKey = getenv(config('apis.openai.api_key'));
+        $this->model = config('apis.openai.model');
+        $this->client = OpenAI::client($apiKey);
+    }
+
+    // Acts as a factory for dynamic binding
+    public static function forProject(Project $project): static {
+        return new static($project);
+    }
+
+    public function sendPrompt(string $prompt): string {
+        return $this->client->responses()->create([
+            'model' => $this->model,
+            'input' => $prompt
+        ])->outputText;
+    }
 
     public static function lockName(int $projectId): string {
         return "project_{$projectId}_lock";
@@ -13,14 +37,20 @@ abstract class PromptingStrategy
 
     // Do request and save in the database
     public function genAssistantSummary(): void {
-        // TODO: Implement getAssistantSummary() method.
-
+        // Prepare data
         $params = [];
-        // TODO: Prepare Data
+        $this['project'] = $this->project->asPromptArray();
         $prompt = view('prompts.assistant-summary', $params)->render();
 
-        // TODO: Do Request with prompt output
-        // TODO: Store Results
+        // Send Request
+        $response = json_decode($this->sendPrompt($prompt));
+        if (empty($response)) {
+            return;
+        }
+
+        // Add the assistant message
+        $assistant = Contributor::assistant();
+        $this->project->addMessage($response, contributor: $assistant);
     }
 
     // Do request and save in the database
