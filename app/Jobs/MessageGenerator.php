@@ -17,6 +17,8 @@ class MessageGenerator extends ProjectJob implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
+    public int $timeout = 120;
+
     public function __construct(int $projectId) {
         $this->setProject($projectId);
     }

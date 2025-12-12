@@ -51,10 +51,6 @@ abstract class PromptingStrategy
         return Concurrency::run($tasks);
     }
 
-    public static function lockName(int $projectId): string {
-        return "project_{$projectId}_lock";
-    }
-
     // Do request and save in the database
     public function genAssistantSummary(): void {
         // Prepare data
@@ -63,14 +59,13 @@ abstract class PromptingStrategy
         $prompt = view('prompts.assistant-summary', $params)->render();
 
         // Send Request
-        $response = json_decode($this->sendPrompt($prompt), associative: true);
-        if (empty($response)) {
+        $response = json_decode($this->sendPrompt($prompt), true);
+        if (empty($response['summary'])) {
             return;
         }
 
-        // Add the assistant message
         $assistant = Contributor::assistant();
-        $this->project->addMessage($response, contributor: $assistant);
+        $this->project->addMessage($response['summary'], contributor: $assistant);
     }
 
     // Do request and save in the database

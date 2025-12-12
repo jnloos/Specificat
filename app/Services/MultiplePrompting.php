@@ -71,6 +71,8 @@ class MultiplePrompting extends PromptingStrategy
             return;
         }
 
+        Log::info(json_encode($responses, JSON_PRETTY_PRINT));
+
         // Sort by importance
         uasort($messages, fn($a, $b) => ($b['importance'] ?? 0) <=> ($a['importance'] ?? 0));
 

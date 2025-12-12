@@ -4,6 +4,7 @@ namespace App\Jobs;
 use App\Jobs\Dependencies\ProjectJob;
 use App\Models\Project;
 use App\Services\Dependencies\PromptingStrategy;
+use App\Services\DiscussionStates;
 use Exception;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
@@ -15,6 +16,8 @@ use Log;
 class SummaryGenerator extends ProjectJob implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
+
+    public int $timeout = 120;
 
     public function __construct(int $projectId) {
         $this->setProject($projectId);
