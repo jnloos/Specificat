@@ -3,6 +3,8 @@
 namespace App\Livewire\Projects;
 
 use App\Models\Project;
+use App\Services\MultiplePrompting;
+use App\Services\SinglePrompting;
 use Flux\Flux;
 use Illuminate\Support\Facades\Cookie;
 use Livewire\Attributes\Locked;
@@ -47,6 +49,10 @@ class EditProject extends Component
         $project->title = $this->title;
         $project->description = $this->description;
         $project->summary_frequency = $this->frequency;
+        match($this->strategy) {
+            'single' => $project->prompting_strategy = SinglePrompting::class,
+            'multiple' => $project->prompting_strategy = MultiplePrompting::class,
+        };
         $project->save();
 
         $this->dispatch('project_edited');

@@ -10,10 +10,6 @@ use Illuminate\Support\Facades\Session;
 
 class Project extends Model
 {
-    public const STATUS_PAUSE = 'pause';
-    public const STATUS_GENERATE = 'generate';
-    public const STATUS_SUMMARIZE = 'summarize';
-
     public function messages(): HasMany {
         return $this->hasMany(Message::class);
     }
@@ -82,40 +78,6 @@ class Project extends Model
         });
     }
 
-    protected function sessionKey(): string {
-        return "project-status.$this->id";
-    }
-
-    public function getRunStatus(): string {
-        return $this->isPersistent()
-            ? Session::get($this->sessionKey(), self::STATUS_PAUSE)
-            : self::STATUS_PAUSE;
-    }
-
-    public function shouldPause(): bool {
-        return $this->getRunStatus() === self::STATUS_PAUSE;
-    }
-
-    public function shouldGenerate(): bool {
-        return $this->getRunStatus() === self::STATUS_GENERATE;
-    }
-
-    public function shouldSummarize(): bool {
-        return $this->getRunStatus() === self::STATUS_SUMMARIZE;
-    }
-
-    public function setPaused(): void {
-        session()->put($this->sessionKey(), self::STATUS_PAUSE);
-    }
-
-    public function setGenerating(): void {
-        session()->put($this->sessionKey(), self::STATUS_GENERATE);
-    }
-
-    public function setSummarizing(): void {
-        session()->put($this->sessionKey(), self::STATUS_SUMMARIZE);
-    }
-
     public function addMessage(string $content, Expert|User|Contributor $contributor): Message {
         $message = new Message();
         $message->project_id = $this->id;
@@ -142,8 +104,7 @@ class Project extends Model
         return [
             'title' => $this->title,
             'description' => $this->description,
-            'messages' => $messages,
-            'prompting_strategy' => $this->prompting_strategy
+            'messages' => $messages
         ];
     }
 }

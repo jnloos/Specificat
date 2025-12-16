@@ -2,7 +2,6 @@
 namespace App\Jobs\Dependencies;
 
 use App\Models\Project;
-use App\Services\Dependencies\LLMService;
 use Illuminate\Support\Facades\Cache;
 
 class ProjectJob
@@ -15,9 +14,13 @@ class ProjectJob
         $this->project = Project::findOrFail($projectId);
     }
 
+    public static function lockName(int $projectId): string {
+        return "project_{$projectId}_lock";
+    }
+
     public static function isRunningFor(int $projectId): bool {
         $project = Project::findOrFail($projectId);
-        $lock = Cache::lock(LLMService::lockName($project->id));
+        $lock = Cache::lock(static::lockName($project->id));
         $token = $lock->get();
 
         if ($token === false) {
@@ -29,7 +32,7 @@ class ProjectJob
     }
 
     protected function withProjectLock(callable $callback): void {
-        $lock = Cache::lock(LLMService::lockName($this->project->id), seconds: self::$lockTTL);
+        $lock = Cache::lock(static::lockName($this->project->id), seconds: self::$lockTTL);
         $token = $lock->get();
 
         if ($token === false) {

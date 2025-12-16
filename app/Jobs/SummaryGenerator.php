@@ -1,9 +1,10 @@
 <?php
 namespace App\Jobs;
 
-use App\Facades\Summary;
 use App\Jobs\Dependencies\ProjectJob;
 use App\Models\Project;
+use App\Services\Dependencies\PromptingStrategy;
+use App\Services\DiscussionStates;
 use Exception;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
@@ -16,6 +17,8 @@ class SummaryGenerator extends ProjectJob implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
+    public int $timeout = 120;
+
     public function __construct(int $projectId) {
         $this->setProject($projectId);
     }
@@ -23,14 +26,12 @@ class SummaryGenerator extends ProjectJob implements ShouldQueue
     public function handle(): void {
         $this->withProjectLock(function (Project $project) {
             try {
-                Summary::forProject($project)->generateUserSummary();
+                /** @var class-string<PromptingStrategy> $strategy */
+                $strategy = $project->prompting_strategy::forProject($project);
+                $strategy->genAssistantSummary();
             }
             catch (Exception $e) {
-                Log::error(sprintf(
-                    "%s: %s",
-                    $e->getMessage(),
-                    $e->getTraceAsString()
-                ));
+                Log::error(sprintf("%s: %s", $e->getMessage(), $e->getTraceAsString()));
             }
         });
     }

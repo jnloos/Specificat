@@ -3,6 +3,8 @@
 namespace App\Livewire\Projects;
 
 use App\Models\Project;
+use App\Services\MultiplePrompting;
+use App\Services\SinglePrompting;
 use Livewire\Attributes\Validate;
 use Livewire\Component;
 
@@ -27,7 +29,10 @@ class CreateProject extends Component
         $project->title = $this->title;
         $project->description = $this->description;
         $project->summary_frequency = $this->frequency;
-        $project->prompting_strategy = $this->strategy;
+        match($this->strategy) {
+            'single' => $project->prompting_strategy = SinglePrompting::class,
+            'multiple' => $project->prompting_strategy = MultiplePrompting::class,
+        };
         $project->save();
 
         $this->redirect(route('project.show', $project), navigate: true);
