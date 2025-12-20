@@ -34,7 +34,12 @@ class EditProject extends Component
         $this->title = $project->title;
         $this->description = $project->description;
         $this->frequency = $project->summary_frequency;
-        $this->strategy = $project->prompting_strategy;
+
+        if ($project->prompting_strategy == MultiplePrompting::class) {
+            $this->strategy = 'multiple';
+        } else {
+            $this->strategy = 'single';
+        }
     }
 
     #[On('edit_project')]
@@ -49,10 +54,13 @@ class EditProject extends Component
         $project->title = $this->title;
         $project->description = $this->description;
         $project->summary_frequency = $this->frequency;
-        match($this->strategy) {
-            'single' => $project->prompting_strategy = SinglePrompting::class,
-            'multiple' => $project->prompting_strategy = MultiplePrompting::class,
-        };
+
+        if($this->strategy == 'multiple') {
+            $project->prompting_strategy = MultiplePrompting::class;
+        } else {
+            $project->prompting_strategy = SinglePrompting::class;
+        }
+
         $project->save();
 
         $this->dispatch('project_edited');

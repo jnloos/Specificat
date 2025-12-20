@@ -1,5 +1,4 @@
 <?php
-
 namespace App\Services;
 
 use App\Models\Expert;
@@ -56,14 +55,16 @@ class MultiplePrompting extends PromptingStrategy
         }
 
         // Run all prompts concurrently
-        $responses = $this->sendPrompts(array_values($prompts));
-        $responses = array_combine(array_keys($prompts), $responses);
-        $messages = [];
-        foreach ($responses as $expertId => $json) {
-            $response = json_decode($json, true);
+        $responses = $this->sendPrompts($prompts);
 
-            if (!empty($response)) {
-                $messages[$expertId] = $response;
+        $messages = [];
+        foreach ($responses as $response) {
+            $response = json_decode($response, true);
+            // Unpacking loop always unpacks only one tuple
+            foreach ($response as $expertId => $data) {
+                if (!empty($data)) {
+                    $messages[$expertId] = $data;
+                }
             }
         }
 
@@ -71,7 +72,7 @@ class MultiplePrompting extends PromptingStrategy
             return;
         }
 
-        Log::info(json_encode($responses, JSON_PRETTY_PRINT));
+        Log::info(json_encode($messages, JSON_PRETTY_PRINT));
 
         // Sort by importance
         uasort($messages, fn($a, $b) => ($b['importance'] ?? 0) <=> ($a['importance'] ?? 0));
