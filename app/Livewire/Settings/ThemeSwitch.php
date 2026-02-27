@@ -11,3 +11,4 @@ class ThemeSwitch extends Component
         return view('livewire.settings.theme-switch');
     }
 }
+

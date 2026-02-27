@@ -23,7 +23,7 @@ class KeyForOpenAi extends Component
             'apiKey' => [
                 'required',
                 function ($attribute, $value, $fail) {
-                    if (!KeyForOpenAi::validate($value)) {
+                    if (!\App\Services\OpenAI\KeyForOpenAI::validate($value)) {
                         $fail(__('settings.errors.open_ai_key_invalid'));
                     }
                 },

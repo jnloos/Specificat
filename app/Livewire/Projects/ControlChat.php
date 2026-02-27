@@ -2,7 +2,7 @@
 namespace App\Livewire\Projects;
 
 use App\Events\MessageGenerated;
-use App\Jobs\Deps\ProjectJob;
+use App\Jobs\Deps\LockedOnProject;
 use App\Jobs\MessageGenerator;
 use App\Models\Project;
 use Livewire\Attributes\Locked;
@@ -33,7 +33,7 @@ class ControlChat extends Component
     }
 
     public function startGenerate(): void {
-        if ($this->isDispatching || ProjectJob::isRunningFor($this->projectId)) {
+        if ($this->isDispatching || LockedOnProject::isRunningFor($this->projectId)) {
             return;
         }
 
@@ -62,7 +62,7 @@ class ControlChat extends Component
     }
 
     public function sendMessage(): void {
-        if ($this->isDispatching || ProjectJob::isRunningFor($this->projectId)) {
+        if ($this->isDispatching || LockedOnProject::isRunningFor($this->projectId)) {
             return;
         }
 

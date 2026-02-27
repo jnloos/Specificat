@@ -34,6 +34,11 @@ Route::get('/settings', function () {
     return view('settings');
 })->name('settings');
 
+Route::get('/debug/queue', function () {
+    abort_unless(config('app.debug') || app()->environment('local'), 404);
+    return view('debug.queue');
+})->name('debug.queue');
+
 Route::get('public/{path}', function (string $path) {
     abort_unless(Storage::disk('local')->exists('public/' . $path), 404);
     return response()->file(Storage::disk('local')->path('public/' . $path));

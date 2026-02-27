@@ -21,6 +21,16 @@ class NativeAppServiceProvider implements ProvidesPhpIni
 
         Menu::create();
         Window::open()->width(1000)->height(900);
+
+        if (config('app.debug') || app()->environment('local')) {
+            Window::open()
+                ->id('queue-debug')
+                ->title('Queue Debugger')
+                ->url(route('debug.queue'))
+                ->width(900)
+                ->height(550)
+                ->alwaysOnTop();
+        }
     }
 
     /**

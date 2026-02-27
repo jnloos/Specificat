@@ -4,7 +4,7 @@ namespace App\Jobs\Deps;
 use App\Models\Project;
 use Illuminate\Support\Facades\Cache;
 
-class ProjectJob
+class LockedOnProject
 {
     protected static int $lockTTL = 30;
 
