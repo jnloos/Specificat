@@ -30,6 +30,10 @@ Route::get('experts', function () {
     return view('experts');
 })->name('experts');
 
+Route::get('/settings', function () {
+    return view('settings');
+})->name('settings');
+
 Route::get('public/{path}', function (string $path) {
     abort_unless(Storage::disk('local')->exists('public/' . $path), 404);
     return response()->file(Storage::disk('local')->path('public/' . $path));

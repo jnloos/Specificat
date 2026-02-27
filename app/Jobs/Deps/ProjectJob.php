@@ -1,5 +1,5 @@
 <?php
-namespace App\Jobs\Dependencies;
+namespace App\Jobs\Deps;
 
 use App\Models\Project;
 use Illuminate\Support\Facades\Cache;

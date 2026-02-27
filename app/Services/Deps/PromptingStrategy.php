@@ -1,5 +1,5 @@
 <?php
-namespace App\Services\Dependencies;
+namespace App\Services\Deps;
 
 use App\Models\Project;
 use Illuminate\Support\Facades\Concurrency;

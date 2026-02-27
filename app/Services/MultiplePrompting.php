@@ -2,7 +2,7 @@
 namespace App\Services;
 
 use App\Models\Expert;
-use App\Services\Dependencies\PromptingStrategy;
+use App\Services\Deps\PromptingStrategy;
 use Illuminate\Support\Facades\Log;
 
 class MultiplePrompting extends PromptingStrategy

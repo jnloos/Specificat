@@ -1,10 +1,12 @@
 <?php
 namespace App\Jobs;
 
-use App\Facades\Specification;
-use App\Jobs\Dependencies\ProjectJob;
+use App\Concerns\FiresToasts;
+use App\Events\MessageGenerated;
+use App\Jobs\Deps\ProjectJob;
+use App\Jobs\Deps\ToastsExceptions;
 use App\Models\Project;
-use App\Services\Dependencies\PromptingStrategy;
+use App\Services\Deps\PromptingStrategy;
 use Exception;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
@@ -16,6 +18,7 @@ use Log;
 class MessageGenerator extends ProjectJob implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
+    use ToastsExceptions;
 
     public int $timeout = 120;
 
@@ -31,8 +34,10 @@ class MessageGenerator extends ProjectJob implements ShouldQueue
                 $strategy->genNextMessage();
             }
             catch (Exception $e) {
-                Log::error(sprintf("%s: %s", $e->getMessage(), $e->getTraceAsString()));
+                $this->toastException($e);
             }
         });
+
+        event(new MessageGenerated($this->project->id));
     }
 }

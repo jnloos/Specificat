@@ -42,6 +42,9 @@
                 <flux:navlist.item icon="folder-git-2" href="https://gitlab.uni-trier.de/s4jaloos/specificat" target="_blank">
                     {{ __('Repository') }}
                 </flux:navlist.item>
+                <flux:navlist.item icon="cog-6-tooth" :href="route('settings')" wire:navigate>
+                    {{ __('Settings') }}
+                </flux:navlist.item>
             </flux:navlist>
         </flux:sidebar>
 

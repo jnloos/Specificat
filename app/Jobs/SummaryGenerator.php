@@ -1,9 +1,9 @@
 <?php
 namespace App\Jobs;
 
-use App\Jobs\Dependencies\ProjectJob;
+use App\Jobs\Deps\ProjectJob;
 use App\Models\Project;
-use App\Services\Dependencies\PromptingStrategy;
+use App\Services\Deps\PromptingStrategy;
 use Exception;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;

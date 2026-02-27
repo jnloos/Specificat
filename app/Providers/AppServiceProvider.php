@@ -3,8 +3,8 @@
 namespace App\Providers;
 
 use App\Facades\Markdown;
-use App\Services\Dependencies\PromptingStrategy;
-use App\Services\Dependencies\SpecificationService;
+use App\Services\Deps\PromptingStrategy;
+use App\Services\Deps\SpecificationService;
 use App\Services\GeminiClient;
 use App\Services\MarkdownParser;
 use App\Services\OpenAIClient;
