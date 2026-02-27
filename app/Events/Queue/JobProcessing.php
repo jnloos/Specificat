@@ -16,6 +16,7 @@ class JobProcessing implements ShouldBroadcastNow
         public string $jobId,
         public string $jobClass,
         public string $timestamp,
+        public string $queue = 'default',
     ) {}
 
     public function broadcastOn(): array

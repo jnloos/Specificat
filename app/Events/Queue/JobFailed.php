@@ -16,6 +16,7 @@ class JobFailed implements ShouldBroadcastNow
         public string $jobId,
         public string $jobClass,
         public string $timestamp,
+        public string $queue = 'default',
         public string $errorMessage = '',
         public string $stackTrace = '',
     ) {}

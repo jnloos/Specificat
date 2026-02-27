@@ -20,6 +20,7 @@ class MessageGenerator extends LockedOnProject implements ShouldQueue
     use ToastsExceptions;
 
     public int $timeout = 120;
+    public int $tries  = 1;
 
     public function __construct(int $projectId) {
         $this->setProject($projectId);

@@ -154,8 +154,32 @@ return [
         'default' => [
             'queues' => ['default'],
             'memory_limit' => 128,
-            'timeout' => 60,
+            'timeout' => 150,
             'sleep' => 3,
+        ],
+        'openai-worker-1' => [
+            'queues' => ['openai'],
+            'memory_limit' => 128,
+            'timeout' => 90,
+            'sleep' => 1,
+        ],
+        'openai-worker-2' => [
+            'queues' => ['openai'],
+            'memory_limit' => 128,
+            'timeout' => 90,
+            'sleep' => 1,
+        ],
+        'openai-worker-3' => [
+            'queues' => ['openai'],
+            'memory_limit' => 128,
+            'timeout' => 90,
+            'sleep' => 1,
+        ],
+        'openai-worker-4' => [
+            'queues' => ['openai'],
+            'memory_limit' => 128,
+            'timeout' => 90,
+            'sleep' => 1,
         ],
     ],
 

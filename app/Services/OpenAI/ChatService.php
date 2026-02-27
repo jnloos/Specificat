@@ -2,10 +2,13 @@
 
 namespace App\Services\OpenAI;
 
+use App\Jobs\OpenAI\PromptJob;
 use App\Models\Expert;
 use App\Models\Project;
-use Illuminate\Support\Facades\Concurrency;
+use Illuminate\Support\Facades\Bus;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Str;
 use OpenAI;
 
 class ChatService
@@ -121,20 +124,36 @@ class ChatService
 
     private function sendPrompts(array $prompts): array
     {
-        $model = $this->model;
+        $batchId    = Str::uuid()->toString();
+        $jobs       = [];
+        $resultKeys = [];
 
-        $tasks = [];
-        foreach ($prompts as $prompt) {
-            $tasks[] = static function () use ($model, $prompt) {
-                $client = OpenAI::client(KeyForOpenAI::get());
-                return $client->responses()->create([
-                    'model' => $model,
-                    'input' => $prompt,
-                ])->outputText;
-            };
+        foreach ($prompts as $key => $prompt) {
+            $resultKey          = "openai_prompt:$batchId:$key";
+            $resultKeys[$key]   = $resultKey;
+            $jobs[]             = new PromptJob($resultKey, $this->model, $prompt);
         }
 
-        return Concurrency::run($tasks);
+        $batch = Bus::batch($jobs)
+            ->onQueue('openai')
+            ->allowFailures()
+            ->dispatch();
+
+        // Block until every job in the batch has finished (success or failure).
+        // PromptJob runs on the dedicated 'openai' worker, so this worker
+        // (running MessageGenerator on 'default') is free to poll without deadlock.
+        $deadline = now()->addSeconds(110);
+        do {
+            usleep(300_000); // 300 ms
+            $batch = $batch->fresh();
+        } while (! $batch->finished() && now()->lt($deadline));
+
+        $results = [];
+        foreach ($resultKeys as $key => $resultKey) {
+            $results[$key] = Cache::pull($resultKey) ?? '';
+        }
+
+        return $results;
     }
 
     private function needsSummaryRefresh(Project $project): bool

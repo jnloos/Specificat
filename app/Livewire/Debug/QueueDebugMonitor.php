@@ -21,6 +21,7 @@ class QueueDebugMonitor extends Component
         string $jobId,
         string $jobClass,
         string $timestamp,
+        string $queue = 'default',
         array $payload = [],
     ): void {
         $this->jobs[$jobId] = [
@@ -28,6 +29,7 @@ class QueueDebugMonitor extends Component
             'class'         => class_basename($jobClass),
             'fullClass'     => $jobClass,
             'status'        => 'dispatched',
+            'queue'         => $queue,
             'dispatched_at' => $timestamp,
             'started_at'    => null,
             'finished_at'   => null,
@@ -45,9 +47,11 @@ class QueueDebugMonitor extends Component
         string $jobId,
         string $jobClass,
         string $timestamp,
+        string $queue = 'default',
     ): void {
         if (isset($this->jobs[$jobId])) {
             $this->jobs[$jobId]['status']     = 'running';
+            $this->jobs[$jobId]['queue']      = $queue;
             $this->jobs[$jobId]['started_at'] = $timestamp;
         } else {
             // Worker picked up a job that was dispatched before the debug window opened
@@ -56,6 +60,7 @@ class QueueDebugMonitor extends Component
                 'class'         => class_basename($jobClass),
                 'fullClass'     => $jobClass,
                 'status'        => 'running',
+                'queue'         => $queue,
                 'dispatched_at' => null,
                 'started_at'    => $timestamp,
                 'finished_at'   => null,
@@ -74,9 +79,11 @@ class QueueDebugMonitor extends Component
         string $jobId,
         string $jobClass,
         string $timestamp,
+        string $queue = 'default',
     ): void {
         if (isset($this->jobs[$jobId])) {
             $this->jobs[$jobId]['status']      = 'success';
+            $this->jobs[$jobId]['queue']       = $queue;
             $this->jobs[$jobId]['finished_at'] = $timestamp;
             $this->jobs[$jobId]['duration_ms'] = $this->calculateDurationMs(
                 $this->jobs[$jobId]['started_at'],
@@ -90,11 +97,13 @@ class QueueDebugMonitor extends Component
         string $jobId,
         string $jobClass,
         string $timestamp,
+        string $queue = 'default',
         string $errorMessage = '',
         string $stackTrace = '',
     ): void {
         if (isset($this->jobs[$jobId])) {
             $this->jobs[$jobId]['status']      = 'failed';
+            $this->jobs[$jobId]['queue']       = $queue;
             $this->jobs[$jobId]['finished_at'] = $timestamp;
             $this->jobs[$jobId]['duration_ms'] = $this->calculateDurationMs(
                 $this->jobs[$jobId]['started_at'],
@@ -109,6 +118,7 @@ class QueueDebugMonitor extends Component
                 'class'         => class_basename($jobClass),
                 'fullClass'     => $jobClass,
                 'status'        => 'failed',
+                'queue'         => $queue,
                 'dispatched_at' => null,
                 'started_at'    => null,
                 'finished_at'   => $timestamp,

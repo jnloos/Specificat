@@ -20,9 +20,10 @@
 
     {{-- Column headings --}}
     @if (count($jobs) > 0)
-        <div class="grid grid-cols-[140px_1fr_110px_90px_32px] gap-2 px-4 py-2 border-b border-zinc-700/50 text-zinc-500 text-xs uppercase tracking-wider shrink-0">
+        <div class="grid grid-cols-[140px_1fr_90px_110px_90px_32px] gap-2 px-4 py-2 border-b border-zinc-700/50 text-zinc-500 text-xs uppercase tracking-wider shrink-0">
             <span>Time</span>
             <span>Job</span>
+            <span>Queue</span>
             <span>Status</span>
             <span class="text-right">Duration</span>
             <span></span>
@@ -45,7 +46,7 @@
                 wire:key="job-{{ $job['id'] }}"
             >
                 {{-- Main row --}}
-                <div class="grid grid-cols-[140px_1fr_110px_90px_32px] gap-2 items-center px-4 py-2.5">
+                <div class="grid grid-cols-[140px_1fr_90px_110px_90px_32px] gap-2 items-center px-4 py-2.5">
 
                     {{-- Timestamp --}}
                     <span class="text-zinc-500 text-xs tabular-nums truncate">
@@ -63,6 +64,16 @@
                             title="{{ $job['fullClass'] }}"
                         >{{ $job['class'] }}</span>
                         <span class="text-zinc-600 text-xs truncate block">{{ $job['id'] }}</span>
+                    </div>
+
+                    {{-- Worker / queue --}}
+                    <div class="min-w-0">
+                        <span class="inline-flex items-center gap-1 px-1.5 py-0.5 rounded text-xs font-medium bg-zinc-700/60 text-zinc-400 truncate max-w-full">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="currentColor" class="w-3 h-3 shrink-0">
+                                <path d="M8 7a3 3 0 1 0 0-6 3 3 0 0 0 0 6ZM14.5 13.5a6.5 6.5 0 0 0-13 0h13Z" />
+                            </svg>
+                            <span class="truncate">{{ $job['queue'] ?? 'default' }}</span>
+                        </span>
                     </div>
 
                     {{-- Status badge --}}

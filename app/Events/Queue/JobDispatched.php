@@ -16,6 +16,7 @@ class JobDispatched implements ShouldBroadcastNow
         public string $jobId,
         public string $jobClass,
         public string $timestamp,
+        public string $queue = 'default',
         public array $payload = [],
     ) {}
 

@@ -26,8 +26,9 @@ class QueueDebugServiceProvider extends ServiceProvider
         $events->listen(JobQueued::class, function (JobQueued $event) {
             $jobId    = (string) $event->id;
             $jobClass = is_object($event->job) ? get_class($event->job) : (string) $event->job;
+            $queue    = $event->queue ?? 'default';
 
-            DebugJobDispatched::dispatch($jobId, $jobClass, now()->toIso8601String());
+            DebugJobDispatched::dispatch($jobId, $jobClass, now()->toIso8601String(), $queue);
         });
 
         // Fire when the queue worker picks up a job
@@ -35,8 +36,9 @@ class QueueDebugServiceProvider extends ServiceProvider
             $jobId    = (string) $event->job->getJobId();
             $payload  = $event->job->payload();
             $jobClass = $payload['displayName'] ?? $event->job->getName();
+            $queue    = $event->job->getQueue();
 
-            DebugJobProcessing::dispatch($jobId, $jobClass, now()->toIso8601String());
+            DebugJobProcessing::dispatch($jobId, $jobClass, now()->toIso8601String(), $queue);
         });
 
         // Fire when a job completes successfully
@@ -44,8 +46,9 @@ class QueueDebugServiceProvider extends ServiceProvider
             $jobId    = (string) $event->job->getJobId();
             $payload  = $event->job->payload();
             $jobClass = $payload['displayName'] ?? $event->job->getName();
+            $queue    = $event->job->getQueue();
 
-            DebugJobSucceeded::dispatch($jobId, $jobClass, now()->toIso8601String());
+            DebugJobSucceeded::dispatch($jobId, $jobClass, now()->toIso8601String(), $queue);
         });
 
         // Fire when a job fails
@@ -53,11 +56,12 @@ class QueueDebugServiceProvider extends ServiceProvider
             $jobId    = (string) $event->job->getJobId();
             $payload  = $event->job->payload();
             $jobClass = $payload['displayName'] ?? $event->job->getName();
+            $queue    = $event->job->getQueue();
 
             $errorMessage = $event->exception->getMessage();
-            $stackTrace = $event->exception->getTraceAsString();
+            $stackTrace   = $event->exception->getTraceAsString();
 
-            DebugJobFailed::dispatch($jobId, $jobClass, now()->toIso8601String(), $errorMessage, $stackTrace);
+            DebugJobFailed::dispatch($jobId, $jobClass, now()->toIso8601String(), $queue, $errorMessage, $stackTrace);
         });
     }
 }
