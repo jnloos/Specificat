@@ -7,8 +7,8 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class Message extends Model
 {
-    public function contributor(): BelongsTo {
-        return $this->belongsTo(Contributor::class);
+    public function expert(): BelongsTo {
+        return $this->belongsTo(Expert::class);
     }
 
     public function project(): BelongsTo {
@@ -16,12 +16,9 @@ class Message extends Model
     }
 
     public function toPromptArray(): array {
-        $contributor = $this->contributor;
-        $expertId = $contributor->isExpert() ? $contributor->expert_id : null;
-
         return [
-            'expert_id' => $expertId,
-            'content' => $this->content
+            'expert_id' => $this->expert_id,
+            'content' => $this->content,
         ];
     }
 }

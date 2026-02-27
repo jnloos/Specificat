@@ -31,7 +31,7 @@ class ControlChat extends Component
     }
 
     public function hydrate(): void {
-        $this->project = Project::with('contributors')->findOrFail($this->projectId);
+        $this->project = Project::findOrFail($this->projectId);
     }
 
     public function startGenerate(): void {
@@ -89,7 +89,7 @@ class ControlChat extends Component
         }
 
         $this->validate();
-        $this->project->addMessage($this->msgContent, contributor: auth()->user());
+        $this->project->addMessage($this->msgContent, null);
         $this->dispatch('message_sent');
         $this->reset('msgContent');
     }

@@ -2,6 +2,8 @@
 
 namespace App\Providers;
 
+use Native\Desktop\Facades\Menu;
+use Native\Desktop\Facades\Settings;
 use Native\Desktop\Facades\Window;
 use Native\Desktop\Contracts\ProvidesPhpIni;
 
@@ -13,7 +15,12 @@ class NativeAppServiceProvider implements ProvidesPhpIni
      */
     public function boot(): void
     {
-        Window::open();
+        // Override locale if modified in the settings
+        $locale = Settings::get('locale', config('app.locale'));
+        app()->setLocale($locale);
+
+        Menu::create();
+        Window::open()->width(1000)->height(900);
     }
 
     /**

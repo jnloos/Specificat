@@ -1,11 +1,9 @@
 <?php
 namespace App\Services\Dependencies;
 
-use App\Models\Contributor;
 use App\Models\Project;
 use Illuminate\Support\Facades\Concurrency;
 use OpenAI;
-use function Laravel\Prompts\confirm;
 
 abstract class PromptingStrategy
 {
@@ -49,23 +47,6 @@ abstract class PromptingStrategy
         }
 
         return Concurrency::run($tasks);
-    }
-
-    // Do request and save in the database
-    public function genAssistantSummary(): void {
-        // Prepare data
-        $params = [];
-        $params['project'] = $this->project->asPromptArray();
-        $prompt = view('prompts.assistant-summary', $params)->render();
-
-        // Send Request
-        $response = json_decode($this->sendPrompt($prompt), true);
-        if (empty($response['summary'])) {
-            return;
-        }
-
-        $assistant = Contributor::assistant();
-        $this->project->addMessage($response['summary'], contributor: $assistant);
     }
 
     // Do request and save in the database

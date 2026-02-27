@@ -17,7 +17,7 @@
             </flux:heading>
         </div>
 
-        <x-projects.contributor-group :contributors="$project->contributors" :label="__('Set Contributors')" @click="$wire.dispatch('select_contributors')">
+        <x-projects.contributor-group :experts="$project->experts" :label="__('Set Contributors')" @click="$wire.dispatch('select_contributors')">
             {{ __('Add ') }}
         </x-projects.contributor-group>
     </div>

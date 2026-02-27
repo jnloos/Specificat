@@ -27,7 +27,7 @@ class ProjectChat extends Component
     }
 
     public function hydrate(): void {
-        $this->project = Project::with('contributors')->findOrFail($this->projectId);
+        $this->project = Project::findOrFail($this->projectId);
         $this->updateHasMore();
     }
 

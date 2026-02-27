@@ -72,7 +72,7 @@ class ExpertEditor extends Component
             $expert->save();
         }
 
-        $this->expertId = $expert->id;
+        $this->expertId  = $expert->id;
         $this->avatarUrl = $expert->avatar_url;
 
         $this->resetForm();
@@ -81,7 +81,7 @@ class ExpertEditor extends Component
     }
 
     public function updatedAvatarUpload(): void {
-        if(!is_null($this->avatarUpload)) {
+        if (!is_null($this->avatarUpload)) {
             $this->avatarUrl = $this->avatarUpload->temporaryUrl();
             $this->dispatch('$refresh');
         }
@@ -89,9 +89,9 @@ class ExpertEditor extends Component
 
     protected function storeAvatar(int $expertId): string {
         $extension = $this->avatarUpload->getClientOriginalExtension();
-        $filename = "expert-$expertId-avatar-" . time() . ".$extension";
-        $path = $this->avatarUpload->storeAs(path: '/avatars/custom', name: $filename, options: 'public');
-        return Storage::url($path);
+        $filename  = "expert-$expertId-avatar-" . time() . ".$extension";
+        $this->avatarUpload->storeAs('public/avatars', $filename, 'local');
+        return route('public', ['path' => 'avatars/' . $filename]);
     }
 
     public function delete(): void {
@@ -107,11 +107,13 @@ class ExpertEditor extends Component
     }
 
     protected function deleteAvatar(?string $url): void {
-        if(is_null($url)) return;
-        if (str_contains($url, 'public/avatars/static')) return;
-        $filename = basename(parse_url($url, PHP_URL_PATH));
-        $path = '/avatars/custom/' . $filename;
-        Storage::disk('public')->delete($path);
+        if (is_null($url)) return;
+        // Skip static bundled avatars (served from public/static/img/avatars/)
+        if (str_starts_with($url, '/static/img/avatars/')) return;
+        // Custom avatars: extract a path segment after /public/ from the URL
+        $urlPath  = parse_url($url, PHP_URL_PATH); // e.g. /public/avatars/custom/file.png
+        $relative = ltrim(preg_replace('#^/public/#', '', $urlPath), '/');
+        Storage::disk('local')->delete('public/' . $relative);
     }
 
     protected function resetForm(): void {
@@ -119,11 +121,8 @@ class ExpertEditor extends Component
     }
 
     public function render(): mixed {
-        $isUpdate = !is_null($this->expertId);
         return view('livewire.experts.expert-editor', [
-            'isUpdate' => $isUpdate
+            'isUpdate' => !is_null($this->expertId),
         ]);
     }
 }
-
-

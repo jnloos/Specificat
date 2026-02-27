@@ -1,18 +1,17 @@
 @props([
-    'contributors' => [],
+    'experts' => [],
     'label' => null,
 ])
 
 <div class="flex items-center space-x-3">
     <flux:avatar.group class="**:ring-zinc-100 dark:**:ring-zinc-800">
         @php
-            $visible = collect($contributors)->take(3);
-            $remaining = count($contributors) - $visible->count();
+            $visible = collect($experts)->take(3);
+            $remaining = count($experts) - $visible->count();
         @endphp
 
-        @foreach ($visible as $contributor)
-            @php($contributor = $contributor->unmask())
-            <x-contributors.contributors-avatar :name="$contributor->name" :avatar-url="$contributor->avatar_url" class="h-12 w-12"/>
+        @foreach ($visible as $expert)
+            <x-contributors.contributors-avatar :name="$expert->name" :avatar-url="$expert->avatar_url" class="h-12 w-12"/>
         @endforeach
 
         <div>
@@ -33,4 +32,3 @@
         @endif
     </flux:button>
 </div>
-

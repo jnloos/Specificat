@@ -4,7 +4,6 @@ namespace App\Jobs;
 use App\Jobs\Dependencies\ProjectJob;
 use App\Models\Project;
 use App\Services\Dependencies\PromptingStrategy;
-use App\Services\DiscussionStates;
 use Exception;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
@@ -28,7 +27,7 @@ class SummaryGenerator extends ProjectJob implements ShouldQueue
             try {
                 /** @var class-string<PromptingStrategy> $strategy */
                 $strategy = $project->prompting_strategy::forProject($project);
-                $strategy->genAssistantSummary();
+                $strategy->genExpertSummaries();
             }
             catch (Exception $e) {
                 Log::error(sprintf("%s: %s", $e->getMessage(), $e->getTraceAsString()));
