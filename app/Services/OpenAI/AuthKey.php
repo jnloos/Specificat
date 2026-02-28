@@ -6,16 +6,16 @@ use Native\Desktop\Facades\Settings;
 use OpenAI;
 use Throwable;
 
-class KeyForOpenAI
+class AuthKey
 {
     public static function get(): ?string
     {
-        return Settings::get(KeyForOpenAI::class.'.key');
+        return Settings::get(AuthKey::class.'.key');
     }
 
     public static function set(string $key): void
     {
-        Settings::set(KeyForOpenAI::class.'.key', $key);
+        Settings::set(AuthKey::class.'.key', $key);
     }
 
     public static function validate(?string $key = null): bool
@@ -44,7 +44,7 @@ class KeyForOpenAI
 
     public static function status(): bool
     {
-        $cachedStatus = Settings::get(KeyForOpenAI::class.'.status');
+        $cachedStatus = Settings::get(AuthKey::class.'.status');
 
         // If status is not cached but a key exists, validate it
         if ($cachedStatus === null && self::get()) {
@@ -56,6 +56,6 @@ class KeyForOpenAI
 
     protected static function cacheStatus(bool $status): void
     {
-        Settings::set(KeyForOpenAI::class.'.status', $status);
+        Settings::set(AuthKey::class.'.status', $status);
     }
 }

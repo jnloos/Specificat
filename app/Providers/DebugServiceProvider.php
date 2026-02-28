@@ -2,17 +2,17 @@
 
 namespace App\Providers;
 
-use App\Events\Queue\JobDispatched as DebugJobDispatched;
-use App\Events\Queue\JobFailed as DebugJobFailed;
-use App\Events\Queue\JobProcessing as DebugJobProcessing;
-use App\Events\Queue\JobSucceeded as DebugJobSucceeded;
+use App\Events\Debug\Queue\JobDispatched as DebugJobDispatched;
+use App\Events\Debug\Queue\JobFailed as DebugJobFailed;
+use App\Events\Debug\Queue\JobProcessing as DebugJobProcessing;
+use App\Events\Debug\Queue\JobSucceeded as DebugJobSucceeded;
 use Illuminate\Queue\Events\JobFailed;
 use Illuminate\Queue\Events\JobProcessed;
 use Illuminate\Queue\Events\JobProcessing;
 use Illuminate\Queue\Events\JobQueued;
 use Illuminate\Support\ServiceProvider;
 
-class QueueDebugServiceProvider extends ServiceProvider
+class DebugServiceProvider extends ServiceProvider
 {
     public function boot(): void
     {

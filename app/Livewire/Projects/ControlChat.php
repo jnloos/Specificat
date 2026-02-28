@@ -2,8 +2,7 @@
 namespace App\Livewire\Projects;
 
 use App\Events\MessageGenerated;
-use App\Jobs\Deps\LockedOnProject;
-use App\Jobs\MessageGenerator;
+use App\Jobs\GenerateNextMsg;
 use App\Models\Project;
 use Livewire\Attributes\Locked;
 use Livewire\Attributes\On;
@@ -33,13 +32,13 @@ class ControlChat extends Component
     }
 
     public function startGenerate(): void {
-        if ($this->isDispatching || LockedOnProject::isRunningFor($this->projectId)) {
+        if ($this->isDispatching) {
             return;
         }
 
         $this->keepGenerating = true;
         $this->isDispatching  = true;
-        MessageGenerator::dispatch($this->projectId);
+        GenerateNextMsg::dispatch($this->projectId);
     }
 
     public function stopGenerate(): void {
@@ -55,14 +54,14 @@ class ControlChat extends Component
         $this->dispatch('message_sent');
 
         if ($this->keepGenerating) {
-            MessageGenerator::dispatch($this->projectId);
+            GenerateNextMsg::dispatch($this->projectId);
         } else {
             $this->isDispatching = false;
         }
     }
 
     public function sendMessage(): void {
-        if ($this->isDispatching || LockedOnProject::isRunningFor($this->projectId)) {
+        if ($this->isDispatching) {
             return;
         }
 

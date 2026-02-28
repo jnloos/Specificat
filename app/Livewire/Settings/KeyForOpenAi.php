@@ -11,7 +11,7 @@ class KeyForOpenAi extends Component
 
     public function mount(): void
     {
-        $this->apiKey = \App\Services\OpenAI\KeyForOpenAI::get() ?? '';
+        $this->apiKey = \App\Services\OpenAI\AuthKey::get() ?? '';
         if ($this->apiKey !== '') {
             $this->validate();
         }
@@ -23,7 +23,7 @@ class KeyForOpenAi extends Component
             'apiKey' => [
                 'required',
                 function ($attribute, $value, $fail) {
-                    if (!\App\Services\OpenAI\KeyForOpenAI::validate($value)) {
+                    if (!\App\Services\OpenAI\AuthKey::validate($value)) {
                         $fail(__('settings.errors.open_ai_key_invalid'));
                     }
                 },
@@ -36,7 +36,7 @@ class KeyForOpenAi extends Component
         $this->resetErrorBag('apiKey');
 
         $this->validate();
-        \App\Services\OpenAI\KeyForOpenAI::set($this->apiKey);
+        \App\Services\OpenAI\AuthKey::set($this->apiKey);
         ToastPusher::toastSuccess(__('settings.headings.open_ai'), __('settings.notifications.open_ai_key_valid'));
     }
 

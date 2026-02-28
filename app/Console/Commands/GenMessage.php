@@ -2,8 +2,8 @@
 
 namespace App\Console\Commands;
 
-use App\Facades\Specification;
-use App\Jobs\MessageGenerator;
+use App\Facades\Brain;
+use App\Jobs\GenerateNextMsg;
 use App\Models\Project;
 use Illuminate\Console\Command;
 
@@ -46,7 +46,7 @@ class GenMessage extends Command
 
         try {
             // Execute job synchronously
-            Specification::forProject($project)->generateNextMessage();
+            Brain::forProject($project)->generateNextMessage();
 
             $this->info('✓ Job executed successfully!');
             $this->line('');

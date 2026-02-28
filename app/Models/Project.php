@@ -25,16 +25,18 @@ class Project extends Model
         return $this->experts()->count() > 0;
     }
 
-    public function addContributingExpert(Expert $expert): void {
+    public function addExpert(Expert $expert): void {
         $this->experts()->syncWithoutDetaching($expert->id);
     }
 
-    public function removeContributingExpert(Expert $expert): void {
+    public function removeExpert(Expert $expert): void {
         $this->experts()->detach($expert->id);
     }
 
-    public function contributingExperts(): Collection {
-        return $this->experts()->get();
+    public function needsSummary(): bool {
+        $numMsg = $this->messages()->count();
+        $freq = $this->summary_frequency;
+        return $numMsg > 0 && $numMsg % $freq === 0;
     }
 
     protected static function booted(): void {

@@ -35,13 +35,13 @@ class SelectContributors extends Component
 
     public function addExpert(int $expertId): void {
         $expert = Expert::findOrFail($expertId);
-        $this->forProject->addContributingExpert($expert);
+        $this->forProject->addExpert($expert);
         $this->dispatch('contributors_modified');
     }
 
     public function removeExpert(int $expertId): void {
         $expert = Expert::findOrFail($expertId);
-        $this->forProject->removeContributingExpert($expert);
+        $this->forProject->removeExpert($expert);
         $this->dispatch('contributors_modified');
     }
 
